@@ -1,25 +1,23 @@
 class Auxiliar():
 
-    def __init__(self, A_matrix, b_vector, c_vector, num_rows):
+    def __init__(self, A_matrix, b_vector, c_vector, num_rows, num_variables):
         self.A_matrix = A_matrix
         self.b_vector = b_vector
         self.c_vector = c_vector
         self.num_rows = num_rows
+        self.num_variables = num_variables
 
     def execute(self, print_flag=False):
+        """
         need_aux = False
         for i, value in enumerate(self.b_vector):
             if i == 0:
                 continue
             if value < 0:
                 need_aux = True
-                """
-                # Verifica inviabilidade
-                if all(k >= 0 for k in self.A_matrix[i-1]):
-                    return ("Inviavel", self.A_matrix[i-1])
-                """
         if not need_aux:
             return 0
+        """
 
         self.aux_tableau = []
         firstline = []
@@ -27,19 +25,20 @@ class Auxiliar():
         for i in range(len(self.c_vector)):
             firstline.append(0)
         for i in range(self.num_rows):
-            firstline.append(1)
-        firstline.append(0)
+            firstline.append(1) # colunas da auxiliar
+        firstline.append(0) # valor objetivo
         self.aux_tableau.append(firstline)
-        # Adiciona A
+        # Adiciona A e trata linhas com b negativo
         for i in range(self.num_rows):
             if self.b_vector[i+1] < 0:
                 mult = -1
             else:
                 mult = 1
             line = []
-            for j in range(len(self.aux_tableau[0])):
-                line.append(self.aux_tableau[i][j]*mult)
+            for j in range(len(self.A_matrix[0])):
+                line.append(self.A_matrix[i][j]*mult)
             self.aux_tableau.append(line)
+
         # Adiciona novas colunas e vetor b ao tableau auxiliar:
         for i in range(1, self.num_rows+1):
             for j in range(1, self.num_rows+1):
@@ -58,18 +57,23 @@ class Auxiliar():
             for j in range(len(self.aux_tableau[0])):
                 self.aux_tableau[0][j] = self.aux_tableau[0][j] - self.aux_tableau[i][j]
 
+        if print_flag:
+            print()
+            print("AUXILIAR")
+            self.aux_print_matrix()
+
         # Pivoteando:
         need_pivot = True
         while need_pivot:
             # Busca pivot
-            pivot_line, pivot_column = self.aux_select_pivot()
+            pivot_line, pivot_column = self.aux_select_pivot(True)
 
             # Verifica parada
             if (pivot_line, pivot_column) == (False, False):
-                if self.aux_verify_objective_value() < 0:
+                if self.aux_tableau[0][-1] < 0:
                     print("inviavel")
-                    start_range = len(self.A_matrix[0])
-                    end_range = len(self.aux_tableau) - 1
+                    start_range = self.num_variables
+                    end_range = len(self.A_matrix[0])
                     for i in range(start_range, end_range):
                         print(self.aux_tableau[0][i], end=" ")
                     return "inviavel"
@@ -87,8 +91,8 @@ class Auxiliar():
         """
         # Selecionando um valor negativo em C
         pivot_column = -1
-        for i, value in enumerate(self.aux_tableau[0]):
-            if value < 0:
+        for i in range(len(self.aux_tableau[0])-1): # -1 para nao usar valor objetivo
+            if self.aux_tableau[0][i] < 0:
                 pivot_column = i
                 break
 
@@ -150,6 +154,7 @@ class Auxiliar():
 
     def aux_print_matrix(self):
         for i, line in enumerate(self.aux_tableau):
+            print("    |",end="")
             if i == 0:
                 sep = "_"
             else:
