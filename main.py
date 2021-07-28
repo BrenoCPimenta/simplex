@@ -4,7 +4,7 @@ from auxiliar import Auxiliar
 
 def read_input():
     """
-    Read input and return as list of intergers
+    Read input and return as list of float
     """
     standart_input = input()
     raw_input = standart_input.split()

@@ -14,6 +14,10 @@ class PL():
         self.num_rows = num_rows
 
     def build_tableau(self):
+        """
+        Standardize matrix and vector
+        values ​​to match the tableau
+        """
         # Multiplica o c por menos 1
         self.c_vector = [i*-1 for i in self.c_vector]
         # Adiciona o valor ótimo no b
@@ -117,6 +121,9 @@ class PL():
 
 
     def print_matrix(self):
+        """
+        Print tableau
+        """
         for i in self.c_vector:
             space = self.get_space(i)
             print("_"*space, round(i,1) , end =" ")
@@ -130,17 +137,24 @@ class PL():
             print("|", " "*space, round(self.b_vector[i+1], 1))
 
     def get_space(self, i):
-            if i > 9:
-                space = 2
-            elif i >= 0:
-                space = 3
-            elif i < -9:
-                space = 1
-            elif i < 0:
-                space = 2
-            return space
+        """
+        Get number of spaces
+        for pretty print tableau
+        """
+        if i > 9:
+            space = 2
+        elif i >= 0:
+            space = 3
+        elif i < -9:
+            space = 1
+        elif i < 0:
+            space = 2
+        return space
 
     def get_objective_value(self):
+        """
+        returns objective value
+        """
         print(round(self.b_vector[0], 7)) # Valor objetivo
 
     def get_response(self):
@@ -181,6 +195,10 @@ class PL():
             print(round(value, 7), end=" ")
 
     def get_FPI(self):
+        """
+        Returns tableau separated
+        by specific parts
+        """
         return {
             'A_matrix': self.A_matrix,
             'b_vector': self.b_vector,
@@ -189,7 +207,7 @@ class PL():
 
     def transfer_A_matrix(self, aux_tableau):
         """
-        Uses pivoted lines of the aux PL
+        Uses pivoted lines from the aux PL
         """
         for i in range(len(self.A_matrix)):
             for j in range(len(self.A_matrix[0])):

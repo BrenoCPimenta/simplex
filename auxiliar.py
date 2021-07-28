@@ -124,6 +124,9 @@ class Auxiliar():
         return (True, pivot_line, pivot_column)
 
     def aux_pivot(self, pivot_line, pivot_column):
+        """
+        Pivo the aux Tableau
+        """
         pivot = self.aux_tableau[pivot_line][pivot_column]
 
         # Regularizar linha do pivot
@@ -142,9 +145,15 @@ class Auxiliar():
                     self.aux_tableau[this_line] = new_line
 
     def get_aux_tableau(self):
+        """
+        Returns aux tableu
+        """
         return self.aux_tableau
 
     def aux_print_matrix(self):
+        """
+        Print aux tableau
+        """
         for i, line in enumerate(self.aux_tableau):
             print("    |",end="")
             if i == 0:
@@ -157,6 +166,10 @@ class Auxiliar():
             print()
 
     def aux_get_space(self, i):
+        """
+        Get number of spaces
+        for pretty print the tableau
+        """
         if i > 9:
             space = 2
         elif i >= 0:
