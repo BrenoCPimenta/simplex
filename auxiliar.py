@@ -9,14 +9,7 @@ class Auxiliar():
 
     def execute(self, print_flag=False):
         """
-        need_aux = False
-        for i, value in enumerate(self.b_vector):
-            if i == 0:
-                continue
-            if value < 0:
-                need_aux = True
-        if not need_aux:
-            return 0
+        Creates aux tableau and manages it execution
         """
 
         self.aux_tableau = []
@@ -66,16 +59,16 @@ class Auxiliar():
         need_pivot = True
         while need_pivot:
             # Busca pivot
-            pivot_line, pivot_column = self.aux_select_pivot(True)
+            keep_pivot, pivot_line, pivot_column = self.aux_select_pivot()
 
             # Verifica parada
-            if (pivot_line, pivot_column) == (False, False):
-                if self.aux_tableau[0][-1] < 0:
+            if not keep_pivot:
+                if round(self.aux_tableau[0][-1], 0) < 0:
                     print("inviavel")
                     start_range = self.num_variables
                     end_range = len(self.A_matrix[0])
                     for i in range(start_range, end_range):
-                        print(self.aux_tableau[0][i], end=" ")
+                        print(round(self.aux_tableau[0][i], 7), end=" ")
                     return "inviavel"
                 else:
                     need_pivot = False
@@ -98,7 +91,7 @@ class Auxiliar():
 
         # Verificação de parada
         if pivot_column == -1:
-            return (False, False)
+            return (False, 0, 0)
 
         if print_flag:
             print("    |Column to pivot: ", pivot_column)
@@ -109,7 +102,7 @@ class Auxiliar():
         possible_pivots = []
         lines = len(self.aux_tableau)
         for i in range(1, lines):
-            numerator = self.aux_tableau[i][-1]
+            numerator = abs(self.aux_tableau[i][-1])
             denominator = self.aux_tableau[i][pivot_column]
             if numerator == 0 or denominator == 0:
                 continue
@@ -121,15 +114,14 @@ class Auxiliar():
                 possible_pivots.append((i, limit))
         # Verifica se não há possíveis pivots
         if len(possible_pivots) == 0:
-            return (False, False)
+            return (False, 0, 0)
         # Pegando o maior valor que o x selecionado pode tomar:
         # Ordena as tuplas e pega o index na primeira tupla
         possible_pivots.sort(key=lambda tup: tup[1])
         pivot_line = possible_pivots[0][0]
         if print_flag:
             print("    |Chosen pivot: ", possible_pivots[0][1])
-        return (pivot_line, pivot_column)
-
+        return (True, pivot_line, pivot_column)
 
     def aux_pivot(self, pivot_line, pivot_column):
         pivot = self.aux_tableau[pivot_line][pivot_column]
@@ -161,7 +153,7 @@ class Auxiliar():
                 sep = " "
             for value in line:
                 space = self.aux_get_space(value)
-                print(sep*space, value, end=" ")
+                print(sep*space, round(value,3), end=" ")
             print()
 
     def aux_get_space(self, i):
